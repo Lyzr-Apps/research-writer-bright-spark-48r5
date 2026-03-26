@@ -1,0 +1,48 @@
+{
+  "agent_name": "Research Writer Manager",
+  "agent_id": "69c500924f851c627e46ab69",
+  "description": "Coordinates the research and writing workflow. Routes the user's topic to the Web Research Agent for internet research, then passes findings to the Content Writer Agent to draft a polished article. Aggregates the final article with sources and returns it.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "result": {
+      "title": "string",
+      "article_content": "string",
+      "summary": "string",
+      "sources": [
+        {
+          "title": "string",
+          "url": "string"
+        }
+      ],
+      "word_count": "number",
+      "sections": [
+        {
+          "heading": "string",
+          "content": "string"
+        }
+      ]
+    }
+  },
+  "example_response": {
+    "result": {
+      "title": "The article title",
+      "article_content": "The complete article text",
+      "summary": "Brief summary of the article",
+      "sources": [
+        {
+          "title": "sample string",
+          "url": "sample string"
+        }
+      ],
+      "word_count": 0,
+      "sections": [
+        {
+          "heading": "sample string",
+          "content": "sample string"
+        }
+      ]
+    }
+  }
+}

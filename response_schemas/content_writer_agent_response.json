@@ -1,0 +1,36 @@
+{
+  "agent_name": "Content Writer Agent",
+  "agent_id": "69c5007e3c7ecc186a3e83c7",
+  "description": "Takes research findings and writes a polished, structured long-form article with proper headings, introduction, body sections, and conclusion.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "result": {
+      "title": "string",
+      "article_content": "string",
+      "summary": "string",
+      "sections": [
+        {
+          "heading": "string",
+          "content": "string"
+        }
+      ],
+      "word_count": "number"
+    }
+  },
+  "example_response": {
+    "result": {
+      "title": "The article title",
+      "article_content": "The full article text",
+      "summary": "Brief 2-3 sentence summary",
+      "sections": [
+        {
+          "heading": "sample string",
+          "content": "sample string"
+        }
+      ],
+      "word_count": 0
+    }
+  }
+}
