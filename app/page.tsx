@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { AuthProvider, ProtectedRoute } from 'lyzr-architect/client'
 import { callAIAgent } from '@/lib/aiAgent'
 import parseLLMJson from '@/lib/jsonParser'
+import { authFetch } from '@/lib/authFetch'
 import { Card, CardContent } from '@/components/ui/card'
+import { CustomAuthProvider, useAuth } from './sections/CustomAuthProvider'
 import Header from './sections/Header'
 import AuthScreen from './sections/AuthScreen'
 import TopicInput from './sections/TopicInput'
@@ -126,6 +127,17 @@ function parseAgentResponse(result: any) {
   }
 }
 
+function ProtectedRouteWrapper({ children, unauthenticatedFallback }: { children: React.ReactNode; unauthenticatedFallback: React.ReactNode }) {
+  const { user, isLoading } = useAuth()
+  if (isLoading) {
+    return <div style={{ padding: 40, textAlign: 'center' }}>Loading...</div>
+  }
+  if (!user) {
+    return <>{unauthenticatedFallback}</>
+  }
+  return <>{children}</>
+}
+
 export default function Page() {
   const [view, setView] = useState<'home' | 'article'>('home')
   const [articles, setArticles] = useState<ArticleData[]>([])
@@ -142,7 +154,7 @@ export default function Page() {
     try {
       setLoadingArticles(true)
       setArticlesError(null)
-      const res = await fetch('/api/articles', { credentials: 'include' })
+      const res = await authFetch('/api/articles')
       const data = await res.json()
       if (data.success) {
         setArticles(Array.isArray(data.data) ? data.data : [])
@@ -163,10 +175,9 @@ export default function Page() {
     setGenError(null)
     let articleId = ''
     try {
-      const createRes = await fetch('/api/articles', {
+      const createRes = await authFetch('/api/articles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ title: `Researching: ${topic}`, topic, status: 'generating' }),
       })
       const createData = await createRes.json()
@@ -192,20 +203,18 @@ export default function Page() {
             status: 'completed',
           }
           if (articleId) {
-            await fetch(`/api/articles/${articleId}`, {
+            await authFetch(`/api/articles/${articleId}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
               body: JSON.stringify(updateBody),
             })
           }
           await fetchArticles()
         } else {
           if (articleId) {
-            await fetch(`/api/articles/${articleId}`, {
+            await authFetch(`/api/articles/${articleId}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
               body: JSON.stringify({ status: 'failed' }),
             })
           }
@@ -244,7 +253,7 @@ export default function Page() {
     setLoadingArticle(true)
     setView('article')
     try {
-      const res = await fetch(`/api/articles/${id}`, { credentials: 'include' })
+      const res = await authFetch(`/api/articles/${id}`)
       const data = await res.json()
       if (data.success) {
         setSelectedArticle(data.data)
@@ -256,7 +265,7 @@ export default function Page() {
 
   const handleDeleteArticle = async (id: string) => {
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: 'DELETE', credentials: 'include' })
+      const res = await authFetch(`/api/articles/${id}`, { method: 'DELETE' })
       const data = await res.json()
       if (data.success) {
         setArticles((prev) => prev.filter((a) => a._id !== id))
@@ -279,8 +288,8 @@ export default function Page() {
 
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ProtectedRoute unauthenticatedFallback={<div style={THEME_VARS}><AuthScreen /></div>}>
+      <CustomAuthProvider>
+        <ProtectedRouteWrapper unauthenticatedFallback={<div style={THEME_VARS}><AuthScreen /></div>}>
           <div style={THEME_VARS} className="min-h-screen bg-background text-foreground font-sans">
             <Header showSample={showSample} onToggleSample={setShowSample} onNavigateHome={handleNavigateHome} />
 
@@ -323,8 +332,8 @@ export default function Page() {
               </div>
             </footer>
           </div>
-        </ProtectedRoute>
-      </AuthProvider>
+        </ProtectedRouteWrapper>
+      </CustomAuthProvider>
     </ErrorBoundary>
   )
 }

@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { LoginForm, RegisterForm } from 'lyzr-architect/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FiFeather } from 'react-icons/fi'
+import CustomLoginForm from './CustomLoginForm'
+import CustomRegisterForm from './CustomRegisterForm'
 
 export default function AuthScreen() {
   const [mode, setMode] = useState<'login' | 'register'>('login')
@@ -22,9 +23,9 @@ export default function AuthScreen() {
           </CardHeader>
           <CardContent>
             {mode === 'login' ? (
-              <LoginForm onSwitchToRegister={() => setMode('register')} />
+              <CustomLoginForm onSwitchToRegister={() => setMode('register')} />
             ) : (
-              <RegisterForm onSwitchToLogin={() => setMode('login')} />
+              <CustomRegisterForm onSwitchToLogin={() => setMode('login')} />
             )}
           </CardContent>
         </Card>

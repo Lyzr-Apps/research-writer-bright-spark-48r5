@@ -1,11 +1,10 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { UserMenu } from 'lyzr-architect/client'
-import { FiBookOpen, FiFeather } from 'react-icons/fi'
+import { FiFeather } from 'react-icons/fi'
+import CustomUserMenu from './CustomUserMenu'
 
 interface HeaderProps {
   showSample: boolean
@@ -26,7 +25,7 @@ export default function Header({ showSample, onToggleSample, onNavigateHome }: H
             <Switch id="sample-toggle" checked={showSample} onCheckedChange={onToggleSample} />
             <Label htmlFor="sample-toggle" className="text-sm text-muted-foreground cursor-pointer">Sample Data</Label>
           </div>
-          <UserMenu />
+          <CustomUserMenu />
         </div>
       </div>
     </header>
