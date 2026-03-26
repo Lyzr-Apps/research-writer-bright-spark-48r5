@@ -142,7 +142,7 @@ export default function Page() {
     try {
       setLoadingArticles(true)
       setArticlesError(null)
-      const res = await fetch('/api/articles')
+      const res = await fetch('/api/articles', { credentials: 'include' })
       const data = await res.json()
       if (data.success) {
         setArticles(Array.isArray(data.data) ? data.data : [])
@@ -166,6 +166,7 @@ export default function Page() {
       const createRes = await fetch('/api/articles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ title: `Researching: ${topic}`, topic, status: 'generating' }),
       })
       const createData = await createRes.json()
@@ -194,6 +195,7 @@ export default function Page() {
             await fetch(`/api/articles/${articleId}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
               body: JSON.stringify(updateBody),
             })
           }
@@ -203,6 +205,7 @@ export default function Page() {
             await fetch(`/api/articles/${articleId}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
               body: JSON.stringify({ status: 'failed' }),
             })
           }
@@ -241,7 +244,7 @@ export default function Page() {
     setLoadingArticle(true)
     setView('article')
     try {
-      const res = await fetch(`/api/articles/${id}`)
+      const res = await fetch(`/api/articles/${id}`, { credentials: 'include' })
       const data = await res.json()
       if (data.success) {
         setSelectedArticle(data.data)
@@ -253,7 +256,7 @@ export default function Page() {
 
   const handleDeleteArticle = async (id: string) => {
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/articles/${id}`, { method: 'DELETE', credentials: 'include' })
       const data = await res.json()
       if (data.success) {
         setArticles((prev) => prev.filter((a) => a._id !== id))
